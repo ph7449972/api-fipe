@@ -1,0 +1,73 @@
+version: "3.8"
+
+name: api-fipe
+
+networks:
+  fipe:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fipe-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secretroot
+      MYSQL_DATABASE: fipe
+      MYSQL_USER: fipe
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pfesecretroot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fipe
+
+  redis:
+    image: redis:7-alpine
+    container_name: fipe-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - fipe
+
+  api1:
+    build: ./api1
+    container_name: fipe-api1
+    depends_on:
+      - mysql
+      - redis
+    env_file:
+      - ./api1/.env
+    ports:
+      - "8081:8000"
+    volumes:
+      - ./api1:/var/www
+    networks:
+      - fipe
+
+  api2-worker:
+    build: ./api2
+    container_name: fipe-api2-worker
+    depends_on:
+      - mysql
+      - redis
+    env_file:
+      - ./api2/.env
+    command: ["php", "worker.php"]
+    volumes:
+      - ./api2:/var/www
+    networks:
+      - fipe
