@@ -152,4 +152,4 @@ docker exec -it fipe-mysql mysql -u fipe -pfipe fipe -e "SELECT COUNT(*) brands 
 - Limites da FIPE API: evite bater limite diário; se necessário, crie token ou reduza chamadas de seed
 
 ## Licença
-Projeto de teste prático. Uso educacional/demonstrativo.
+Projeto de teste prático.
