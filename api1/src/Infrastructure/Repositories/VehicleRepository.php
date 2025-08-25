@@ -1,4 +1,4 @@
-. <?php
+<?php
 namespace App\Infrastructure\Repositories;
 
 use App\Infrastructure\Database\Connection;
