@@ -149,7 +149,6 @@ docker exec -it fipe-mysql mysql -u fipe -pfipe fipe -e "SELECT COUNT(*) brands 
 - MySQL não pronto: aguarde mais alguns segundos; verifique logs: `docker logs -f fipe-mysql`
 - Dependências PHP faltando: garanta que executou os passos de Composer em api1 e api2
 - Fila sem consumo: confirme `docker logs -f fipe-worker` e que o Redis está up
-- Limites da FIPE API: evite bater limite diário; se necessário, crie token ou reduza chamadas de seed
 
 ## Licença
 Projeto de teste prático.
